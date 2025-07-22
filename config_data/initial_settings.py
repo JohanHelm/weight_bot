@@ -17,6 +17,10 @@ class PathParams:
     logs_catalog = workdir.joinpath("logs")
     bot_logfile = logs_catalog.joinpath("weight_bot.log")
 
+@dataclass(frozen=True)
+class AppParams:
+    db_type: str = "sqlite"
+
 
 # @dataclass(frozen=True)
 # class PlotParams:
