@@ -34,7 +34,8 @@ class User(Base):
         default=RoleEnum.user,
         server_default=text("'user'")
     )
-    weight = relationship("Weights", back_populates="users")
+
+    weighins = relationship("Weights", back_populates="user")
 
     __table_args__ = (UniqueConstraint('username', name='uq_user_name'),
                       UniqueConstraint('telegram_id', name='uq_telegram_id'),
@@ -48,6 +49,7 @@ class Weights(Base):
     weight = Column(Float, nullable=False)
     date_time = Column(DateTime, nullable=False)
 
+    user = relationship("User", back_populates="weighins")
     __table_args__ = (
         Index("ix_weighins_user_id", "user_id"),
         Index("ix_weighins_date_time", "date_time"),
