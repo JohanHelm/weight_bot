@@ -16,6 +16,7 @@ from markups.keyboards import main_keyboard, back_keyboard
 from config_data.logging_settings import configure_logger
 from config_data.config import Config, TgBot
 from database.dao.user_dao import UserAccessUserDAO
+from utils.helpers import edit_message_media
 # from config_data.initial_settings import PlotParams
 # from database.db_client import Database
 # from services.plot_service import create_plot
@@ -43,11 +44,42 @@ async def process_start_command(msg: Message,
         user_dao.add_one({"username": get_user_names(msg), "telegram_id": msg.from_user.id})
     else:
         reply_msg = create_hello_msg(msg)
-        weight_dao.add_one({"user_id": msg.from_user.id, "weight": 100.5, "date_time": datetime.now(UTC)})
+        # weight_dao.add_one({"user_id": msg.from_user.id, "weight": 100.5, "date_time": datetime.now(UTC)})
     await msg.bot.send_photo(chat_id=msg.from_user.id,
                              photo=random.choice(bot_config.bot_pic),
                              caption=reply_msg,
                              reply_markup=main_keyboard,
+                             )
+
+
+@main_router.callback_query(F.data == "backward_btn",)
+async def process_back_click(callback: CallbackQuery,
+                             bot: Bot,
+                             bot_config: FromDishka[TgBot],
+                             ):
+    await edit_message_media(callback,
+                             bot,
+                             random.choice(bot_config.bot_pic),
+                             main_keyboard,
+                             create_hello_msg(callback),
+                             )
+
+
+@main_router.callback_query(F.data == "track_btn",)
+async def process_track_click(callback: CallbackQuery,
+                              bot: Bot,
+                              bot_config: FromDishka[TgBot],
+                              weight_dao: FromDishka[UserAccessWeightsDAO],
+                              ):
+    data_pack = weight_dao.get_pack(callback.from_user.id)
+    print(len(data_pack))
+
+    await edit_message_media(callback,
+                             bot,
+                             random.choice(bot_config.bot_pic),
+                             back_keyboard,
+                             # create_hello_msg(callback),
+                             "data_pack",
                              )
 
 
