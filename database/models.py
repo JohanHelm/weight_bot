@@ -10,6 +10,8 @@ from sqlalchemy import (
     String,
     UniqueConstraint,
     text,
+    Float,
+    Index,
 )
 from sqlalchemy.orm import relationship
 
@@ -32,7 +34,21 @@ class User(Base):
         default=RoleEnum.user,
         server_default=text("'user'")
     )
+    weight = relationship("Weights", back_populates="users")
 
     __table_args__ = (UniqueConstraint('username', name='uq_user_name'),
                       UniqueConstraint('telegram_id', name='uq_telegram_id'),
                       )
+
+
+class Weights(Base):
+    __tablename__ = "weighins"
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"))
+    weight = Column(Float, nullable=False)
+    date_time = Column(DateTime, nullable=False)
+
+    __table_args__ = (
+        Index("ix_weighins_user_id", "user_id"),
+        Index("ix_weighins_date_time", "date_time"),
+    )
