@@ -36,16 +36,11 @@ async def main():
     dp = Dispatcher(
         storage=MemoryStorage(),
     )
-    db_session = get_db_session(config)
-
-    dp.workflow_data.update({"bot_pic": config.tg_bot.bot_pic,
-                             # "db_session": db_session,
-                             })
 
     dp.include_router(main_router)
 
     container = make_async_container(
-        MyProvider(db_session),
+        MyProvider(config),
         AiogramProvider(),
     )
     setup_dishka(container=container, router=dp, auto_inject=True)
