@@ -7,6 +7,7 @@ alembic==1.16.4
 annotated-types==0.7.0
 attrs==25.3.0
 certifi==2025.7.14
+dishka==1.6.0
 environs==14.2.0
 frozenlist==1.7.0
 greenlet==3.2.3
