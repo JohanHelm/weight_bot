@@ -7,12 +7,12 @@ from aiogram.fsm.context import FSMContext
 from dishka.integrations.aiogram import FromDishka
 
 from database.dao.weight_dao import UserAccessWeightsDAO
-# from filters.my_filters import LabEmployee
 from lexicon.reply_texts import (create_hello_msg,
                                  get_user_names,
                                  help_msg
                                  )
-# from keyboards.markups import main_markup, back_markup, set_params_markup
+
+from markups.keyboards import main_keyboard, back_keyboard
 from config_data.logging_settings import configure_logger
 from config_data.config import Config, TgBot
 from database.dao.user_dao import UserAccessUserDAO
@@ -38,22 +38,29 @@ async def process_start_command(msg: Message,
     user = user_dao.get_one("telegram_id", msg.from_user.id)
 
     if user is None:
-        reply_msg = f"{create_hello_msg(msg)}\nПосмотрите инструкцию по использованию по кнопке help и вперёд."
+        reply_msg = (f"{create_hello_msg(msg)}\n"
+                     f"Посмотрите инструкцию по использованию по кнопке help и вперёд.")
         user_dao.add_one({"username": get_user_names(msg), "telegram_id": msg.from_user.id})
     else:
         reply_msg = create_hello_msg(msg)
         weight_dao.add_one({"user_id": msg.from_user.id, "weight": 100.5, "date_time": datetime.now(UTC)})
-    reply_msg = f"{create_hello_msg(msg)}\nПосмотрите инструкцию по использованию по кнопке help и вперёд."
     await msg.bot.send_photo(chat_id=msg.from_user.id,
                              photo=random.choice(bot_config.bot_pic),
                              caption=reply_msg,
-                             # reply_markup=main_markup,
+                             reply_markup=main_keyboard,
                              )
 
 
 @main_router.message(Command(commands='help'))
-async def process_start_command(message: Message):
-    await message.answer(text=help_msg)
+async def process_help_command(msg: Message,
+                               bot_config: FromDishka[TgBot],
+                               ):
+    await msg.bot.send_photo(chat_id=msg.from_user.id,
+                             photo=random.choice(bot_config.bot_pic),
+                             caption=help_msg,
+                             reply_markup=back_keyboard,
+                             )
+
 
 
 # Этот хэндлер будет срабатывать на отправку боту фотоF.content_type == ContentType.PHOTO
