@@ -1,15 +1,16 @@
-import asyncio
+import random
+from _datetime import datetime, UTC
 from aiogram import Router, F, Bot
-from aiogram.filters import CommandStart, StateFilter
+from aiogram.filters import CommandStart, StateFilter, Command
 from aiogram.types import Message, ContentType, CallbackQuery, BufferedInputFile
 from aiogram.fsm.context import FSMContext
 from dishka.integrations.aiogram import FromDishka
 
-
+from database.dao.weight_dao import UserAccessWeightsDAO
 # from filters.my_filters import LabEmployee
 from lexicon.reply_texts import (create_hello_msg,
                                  get_user_names,
-                                 great_new_user
+                                 help_msg
                                  )
 # from keyboards.markups import main_markup, back_markup, set_params_markup
 from config_data.logging_settings import configure_logger
@@ -28,26 +29,31 @@ main_router = Router()
 
 
 @main_router.message(CommandStart())
-async def start(msg: Message,
-                bot_config: FromDishka[TgBot],
-                user_dao: FromDishka[UserAccessUserDAO]
-                ):
+async def process_start_command(msg: Message,
+                                bot_config: FromDishka[TgBot],
+                                user_dao: FromDishka[UserAccessUserDAO],
+                                weight_dao: FromDishka[UserAccessWeightsDAO],
+                                ):
     logger.info(f"User {get_user_names(msg)} have start the bot")
     user = user_dao.get_one("telegram_id", msg.from_user.id)
+
     if user is None:
-        reply_msg = great_new_user(msg)
+        reply_msg = f"{create_hello_msg(msg)}\nПосмотрите инструкцию по использованию по кнопке help и вперёд."
         user_dao.add_one({"username": get_user_names(msg), "telegram_id": msg.from_user.id})
     else:
         reply_msg = create_hello_msg(msg)
-
+        weight_dao.add_one({"user_id": msg.from_user.id, "weight": 100.5, "date_time": datetime.now(UTC)})
+    reply_msg = f"{create_hello_msg(msg)}\nПосмотрите инструкцию по использованию по кнопке help и вперёд."
     await msg.bot.send_photo(chat_id=msg.from_user.id,
-                             photo=bot_config.bot_pic,
+                             photo=random.choice(bot_config.bot_pic),
                              caption=reply_msg,
                              # reply_markup=main_markup,
                              )
 
 
-
+@main_router.message(Command(commands='help'))
+async def process_start_command(message: Message):
+    await message.answer(text=help_msg)
 
 
 # Этот хэндлер будет срабатывать на отправку боту фотоF.content_type == ContentType.PHOTO

@@ -10,7 +10,7 @@ class DatabaseConfig:
 @dataclass
 class TgBot:
     token: str
-    bot_pic: str
+    bot_pic: tuple[str]
 
 @dataclass
 class Config:
@@ -26,7 +26,7 @@ def load_config(path: str | None = None) -> Config:
     return Config(
         tg_bot=TgBot(
             token=env("BOT_TOKEN"),
-            bot_pic=env("BOT_PIC"),
+            bot_pic=tuple(env("BOT_PIC").split(",")),
         ),
         db=DatabaseConfig(
             db_file=env('DB_FILE'),
