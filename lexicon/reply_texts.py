@@ -14,3 +14,8 @@ def get_user_names(update: Message | CallbackQuery) -> str:
 
 def create_hello_msg(update: Message | CallbackQuery) -> str:
     return f"Привет {get_user_names(update)}"
+
+def great_new_user(update: Message | CallbackQuery) -> str:
+    return f"Привет новый пользователь {get_user_names(update)}"
+
+

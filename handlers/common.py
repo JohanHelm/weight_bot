@@ -8,12 +8,6 @@ from aiogram.fsm.context import FSMContext
 # from filters.my_filters import LabEmployee
 from lexicon.reply_texts import (create_hello_msg,
                                  get_user_names,
-                                 create_current_alarm_settings_msg,
-                                 set_new_setting_msg,
-                                 new_temp_setting_set,
-                                 new_hum_setting_set,
-                                 bad_new_setting_msg,
-                                 acknowledge_msg,
                                  )
 # from keyboards.markups import main_markup, back_markup, set_params_markup
 from config_data.logging_settings import configure_logger
@@ -34,6 +28,7 @@ async def start(msg: Message,
                 bot_pic: str,
                 ):
     logger.info(f"User {get_user_names(msg)} have start the bot")
+    print(msg.from_user.id)
     await msg.bot.send_photo(chat_id=msg.from_user.id,
                              photo=bot_pic,
                              caption=create_hello_msg(msg),
