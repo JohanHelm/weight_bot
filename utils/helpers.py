@@ -1,5 +1,4 @@
 from math import fabs
-from typing import Any
 from aiogram import Bot
 from aiogram.types import CallbackQuery, InputMediaPhoto, BufferedInputFile, InlineKeyboardMarkup
 from aiogram.exceptions import TelegramBadRequest
@@ -37,4 +36,13 @@ def calculate_weight_gain(last_week: float, previous_week: float) -> float:
         return 0
     else:
         return weight_difference
+
+
+def correct_weighing_data(input_weight: str) -> bool:
+    try:
+        weigh_data = float(input_weight)
+    except ValueError:
+        return False
+    else:
+        return 1 <= weigh_data  <= 300
 
