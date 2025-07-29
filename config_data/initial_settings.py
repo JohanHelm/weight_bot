@@ -20,6 +20,8 @@ class PathParams:
 @dataclass(frozen=True)
 class AppParams:
     db_type: str = "sqlite"
+    minimal_interval: int = 7
+    threshold_percent: float = 1.5
 
 
 # @dataclass(frozen=True)
