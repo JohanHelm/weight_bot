@@ -21,6 +21,7 @@ from database.connection import get_db_session
 from utils.prepare import create_logs_catalogs
 from utils.dependencies import MyProvider
 
+
 async def main():
     create_logs_catalogs()
     logger = configure_logger(__name__)
