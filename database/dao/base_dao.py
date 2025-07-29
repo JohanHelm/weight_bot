@@ -23,10 +23,10 @@ class AbstractUpdateOneDAO(ABC):
         raise NotImplementedError
 
 
-class AbstractGetAllDAO(ABC):
-    @abstractmethod
-    def get_all(self):
-        raise NotImplementedError
+# class AbstractGetAllDAO(ABC):
+#     @abstractmethod
+#     def get_all(self):
+#         raise NotImplementedError
 
 
 class AbstractDeleteOneDAO(ABC):
@@ -35,9 +35,21 @@ class AbstractDeleteOneDAO(ABC):
         raise NotImplementedError
 
 
-class AbstractGetPackDAO(ABC):
+# class AbstractGetPackDAO(ABC):
+#     @abstractmethod
+#     def get_pack(self, user_id: int, offset: int, limit: int):
+#         raise NotImplementedError
+
+
+class AbstractGetAwgDAO(ABC):
     @abstractmethod
-    def get_pack(self, offset: int, limit: int):
+    def get_awg_data(self, user_id: int, offset: int, limit: int, identifier_name: str,):
+        raise NotImplementedError
+
+
+class AbstractGetCountDAO(ABC):
+    @abstractmethod
+    async def get_count(self, user_id: int,):
         raise NotImplementedError
 
 
@@ -62,10 +74,10 @@ class GetOneItemDAO(ModelSession, AbstractGetOneDAO):
         return result.scalars().first()
 
 
-class GetAllItemsDAO(ModelSession, AbstractGetAllDAO):
-    def get_all(self):
-        result = self.session.execute(select(self.model))
-        return result.scalars().all()
+# class GetAllItemsDAO(ModelSession, AbstractGetAllDAO):
+#     def get_all(self):
+#         result = self.session.execute(select(self.model))
+#         return result.scalars().all()
 
 
 class DeleteItemDAO(ModelSession, AbstractDeleteOneDAO):
@@ -87,21 +99,72 @@ class UpdateOneItemDAO(ModelSession, AbstractUpdateOneDAO):
             return updating_item
 
 
-class GetPackItemsDAO(ModelSession, AbstractGetPackDAO):
-    def get_pack(self,
-                 user_id: int,
-                 page: int = 0,
-                 limit: int = 14,
-                 order_by: str = "date_time",
-                 descending: bool = True,
-                 ) -> list[dict[str, Any]]:
+# class GetPackItemsDAO(ModelSession, AbstractGetPackDAO):
+#     def get_pack(self,
+#                        page: int,
+#                        user_id: int | None = None,
+#                        limit: int = 25,
+#                        order_by: str | None = None,
+#                        descending: bool = True,
+#                        ) -> list[dict[str, Any]]:
+#         offset = page * limit
+#         if order_by:
+#             order_column = getattr(self.model, order_by)
+#             ordering = desc(order_column) if descending else asc(order_column)
+#         else:
+#             ordering = None
+#
+#         if user_id:
+#             query = (select(self.model).
+#                      where(self.model.user_id == user_id).
+#                      order_by(ordering).
+#                      limit(limit).
+#                      offset(offset)
+#                      )
+#         else:
+#             query = (select(self.model).
+#                      order_by(ordering).
+#                      limit(limit).
+#                      offset(offset)
+#                      )
+#         result = self.session.execute(query)
+#         return result.scalars().all()
+
+
+class GetAwgDataDAO(ModelSession, AbstractGetAwgDAO):
+    def get_awg_data(self,
+                     user_id: int,
+                     page: int,
+                     limit: int,
+                     identifier_name: str,
+                     order_by: str = "date_time",
+                     descending: bool = True,
+                     ) -> float | None:
+
         offset = page * limit
         order_column = getattr(self.model, order_by)
         ordering = desc(order_column) if descending else asc(order_column)
-        query = (select(self.model).
-                 order_by(ordering).
-                 limit(limit).
-                 offset(offset)
-                 )
+
+        subqu = (
+            select(getattr(self.model, identifier_name))
+            .where(self.model.user_id == user_id)
+            .order_by(ordering)
+            .limit(limit)
+            .offset(offset)
+            .subquery()
+        )
+
+        query = select(func.avg(subqu.c[identifier_name]))
         result = self.session.execute(query)
-        return result.scalars().all()
+        return result.scalar()
+
+
+class GetCountItemsDAO(ModelSession, AbstractGetCountDAO):
+    def get_count(self, user_id: int,):
+        query = (
+            select(func.count())
+            .select_from(self.model)
+            .where(self.model.user_id == user_id)
+        )
+        result = self.session.execute(query)
+        return result.scalar()
