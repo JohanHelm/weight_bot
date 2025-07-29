@@ -89,31 +89,19 @@ class UpdateOneItemDAO(ModelSession, AbstractUpdateOneDAO):
 
 class GetPackItemsDAO(ModelSession, AbstractGetPackDAO):
     def get_pack(self,
-                       page: int,
-                       user_id: int | None = None,
-                       limit: int = 25,
-                       order_by: str | None = None,
-                       descending: bool = True,
-                       ) -> list[dict[str, Any]]:
+                 user_id: int,
+                 page: int = 0,
+                 limit: int = 14,
+                 order_by: str = "date_time",
+                 descending: bool = True,
+                 ) -> list[dict[str, Any]]:
         offset = page * limit
-        if order_by:
-            order_column = getattr(self.model, order_by)
-            ordering = desc(order_column) if descending else asc(order_column)
-        else:
-            ordering = None
-
-        if user_id:
-            query = (select(self.model).
-                     where(self.model.user_id == user_id).
-                     order_by(ordering).
-                     limit(limit).
-                     offset(offset)
-                     )
-        else:
-            query = (select(self.model).
-                     order_by(ordering).
-                     limit(limit).
-                     offset(offset)
-                     )
+        order_column = getattr(self.model, order_by)
+        ordering = desc(order_column) if descending else asc(order_column)
+        query = (select(self.model).
+                 order_by(ordering).
+                 limit(limit).
+                 offset(offset)
+                 )
         result = self.session.execute(query)
         return result.scalars().all()
