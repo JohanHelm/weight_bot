@@ -10,3 +10,7 @@ main_keyboard = InlineKeyboardMarkup(
 back_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[[backward_btn],]
 )
+
+confirm_keyboard = InlineKeyboardMarkup(
+    inline_keyboard=[[confirm_btn], [backward_btn],]
+)
