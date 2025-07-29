@@ -4,19 +4,17 @@ from aiogram import Bot, Dispatcher
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
-from dishka import Provider, Scope, make_async_container, provide
+from dishka import make_async_container
 from dishka.integrations.aiogram import (
-    AiogramMiddlewareData,
     AiogramProvider,
-    FromDishka,
-    inject,
     setup_dishka,
 )
 
 from config_data.config import Config, load_config
 from config_data.logging_settings import configure_logger
 from config_data.initial_settings import PathParams
-from handlers.common import main_router
+from handlers.common import common_router
+from handlers.weighings import weighings_router
 from database.connection import get_db_session
 from utils.prepare import create_logs_catalogs
 from utils.dependencies import MyProvider
@@ -38,7 +36,8 @@ async def main():
         storage=MemoryStorage(),
     )
 
-    dp.include_router(main_router)
+    dp.include_router(common_router)
+    dp.include_router(weighings_router)
 
     container = make_async_container(
         MyProvider(config),
