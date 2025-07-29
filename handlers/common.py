@@ -28,10 +28,10 @@ from config_data.initial_settings import AppParams
 
 
 logger = configure_logger(__name__)
-main_router = Router()
+common_router = Router()
 
 
-@main_router.message(CommandStart())
+@common_router.message(CommandStart())
 async def process_start_command(msg: Message,
                                 bot_config: FromDishka[TgBot],
                                 user_dao: FromDishka[UserAccessUserDAO],
@@ -54,7 +54,7 @@ async def process_start_command(msg: Message,
                              )
 
 
-@main_router.callback_query(F.data == "backward_btn",)
+@common_router.callback_query(F.data == "backward_btn",)
 async def process_back_click(callback: CallbackQuery,
                              bot: Bot,
                              bot_config: FromDishka[TgBot],
@@ -67,7 +67,7 @@ async def process_back_click(callback: CallbackQuery,
                              )
 
 
-@main_router.callback_query(F.data == "track_btn",)
+@common_router.callback_query(F.data == "track_btn",)
 async def process_track_click(callback: CallbackQuery,
                               bot: Bot,
                               bot_config: FromDishka[TgBot],
@@ -99,7 +99,7 @@ async def process_track_click(callback: CallbackQuery,
                              )
 
 
-@main_router.message(Command(commands='help'))
+@common_router.message(Command(commands='help'))
 async def process_help_command(msg: Message,
                                bot_config: FromDishka[TgBot],
                                ):
@@ -112,7 +112,7 @@ async def process_help_command(msg: Message,
 
 
 # Этот хэндлер будет срабатывать на отправку боту фотоF.content_type == ContentType.PHOTO
-@main_router.message(F.content_type == ContentType.PHOTO)
+@common_router.message(F.content_type == ContentType.PHOTO)
 async def send_photo_echo(message: Message):
     print(message.photo)
     print(message.photo[-1].file_id)
