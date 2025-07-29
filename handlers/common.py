@@ -9,15 +9,17 @@ from dishka.integrations.aiogram import FromDishka
 from database.dao.weight_dao import UserAccessWeightsDAO
 from lexicon.reply_texts import (create_hello_msg,
                                  get_user_names,
-                                 help_msg
+                                 help_msg,
+                                 create_track_weight_msg,
+                                 create_not_enough_data_msg,
                                  )
 
 from markups.keyboards import main_keyboard, back_keyboard
 from config_data.logging_settings import configure_logger
 from config_data.config import Config, TgBot
 from database.dao.user_dao import UserAccessUserDAO
-from utils.helpers import edit_message_media
-# from config_data.initial_settings import PlotParams
+from utils.helpers import edit_message_media, calculate_weight_gain
+from config_data.initial_settings import AppParams
 # from database.db_client import Database
 # from services.plot_service import create_plot
 # from services.sensor import get_temp_hum
@@ -71,15 +73,29 @@ async def process_track_click(callback: CallbackQuery,
                               bot_config: FromDishka[TgBot],
                               weight_dao: FromDishka[UserAccessWeightsDAO],
                               ):
-    data_pack = weight_dao.get_pack(callback.from_user.id)
-    print(len(data_pack))
+    weighins_count = weight_dao.get_count(callback.from_user.id)
+
+    if weighins_count < AppParams.minimal_interval * 2:
+        reply_text = create_not_enough_data_msg(weighins_count)
+    else:
+        last_week = weight_dao.get_awg_data(user_id=callback.from_user.id,
+                                            page=0,
+                                            limit=AppParams.minimal_interval,
+                                            identifier_name="weight"
+                                            )
+        previous_week = weight_dao.get_awg_data(user_id=callback.from_user.id,
+                                                page=1,
+                                                limit=AppParams.minimal_interval,
+                                                identifier_name="weight"
+                                                )
+        weight_gain = calculate_weight_gain(round(last_week, 2), round(previous_week, 2))
+        reply_text = create_track_weight_msg(weight_gain)
 
     await edit_message_media(callback,
                              bot,
                              random.choice(bot_config.bot_pic),
                              back_keyboard,
-                             # create_hello_msg(callback),
-                             "data_pack",
+                             reply_text,
                              )
 
 
