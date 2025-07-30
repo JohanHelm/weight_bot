@@ -4,5 +4,6 @@ from database.models import Weights
 
 class UserAccessWeightsDAO(GetAwgDataDAO,
                            GetCountItemsDAO,
-                           AddOneItemDAO):
+                           AddOneItemDAO,
+                           ):
     model = Weights

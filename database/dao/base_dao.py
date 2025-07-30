@@ -137,7 +137,7 @@ class GetAwgDataDAO(ModelSession, AbstractGetAwgDAO):
                      page: int,
                      limit: int,
                      identifier_name: str,
-                     order_by: str = "date_time",
+                     order_by: str = "date",
                      descending: bool = True,
                      ) -> float | None:
 
