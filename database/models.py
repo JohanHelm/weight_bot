@@ -12,6 +12,7 @@ from sqlalchemy import (
     text,
     Float,
     Index,
+    Date,
 )
 from sqlalchemy.orm import relationship
 
@@ -47,10 +48,10 @@ class Weights(Base):
     id = Column(Integer, primary_key=True, index=True)
     user_id = Column(Integer, ForeignKey("users.id"))
     weight = Column(Float, nullable=False)
-    date_time = Column(DateTime, nullable=False)
+    date = Column(Date, nullable=False)
 
     user = relationship("User", back_populates="weighins")
     __table_args__ = (
         Index("ix_weighins_user_id", "user_id"),
-        Index("ix_weighins_date_time", "date_time"),
+        Index("ix_weighins_date", "date"),
     )
