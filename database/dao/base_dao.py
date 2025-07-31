@@ -1,13 +1,13 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
-from sqlalchemy import func, insert, select, asc, desc
+from sqlalchemy import and_, asc, desc, func, insert, select
 from sqlalchemy.orm import Session
 
 
 class AbstractGetOneDAO(ABC):
     @abstractmethod
-    def get_one(self, identifier_name: str, identifier_value: Any):
+    def get_one(self, identifiers: dict[str, Any]):
         raise NotImplementedError
 
 
@@ -68,8 +68,9 @@ class AddOneItemDAO(ModelSession, AbstractAddOneDAO):
 
 
 class GetOneItemDAO(ModelSession, AbstractGetOneDAO):
-    def get_one(self, identifier_name: str, identifier_value: Any):
-        query = select(self.model).where(getattr(self.model, identifier_name) == identifier_value)
+    def get_one(self, identifiers: dict[str, Any]):
+        conditions = [getattr(self.model, key) == value for key, value in identifiers.items()]
+        query = select(self.model).where(and_(*conditions))
         result = self.session.execute(query)
         return result.scalars().first()
 
