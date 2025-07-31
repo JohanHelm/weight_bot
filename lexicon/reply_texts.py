@@ -1,5 +1,5 @@
-from aiogram.types import Message, CallbackQuery
-from typing import Any
+
+from aiogram.types import CallbackQuery, Message
 
 from config_data.initial_settings import AppParams
 
@@ -51,7 +51,13 @@ def got_new_weighing_data_msg(weigh_data: float) -> str:
     return (f"Результат вашего взвешивания сегодня {weigh_data} кг.\n"
             f"Нажмите кнопку 👇 ПОДТВЕРДИТЬ чтобы сохранить этот результат.")
 
+
+def create_confirmed_weighing_msg(weigh_data: float) -> str:
+    return f"Результат вашего взвешивания сегодня {weigh_data} кг сохранён.\n"
+
 bad_weighing_data_msg = "Введены некорректные данные!!!\n"
+
+already_entered_weighing_data = "Cегодня вы уже внесли данные взвешивания"
 
 
 
