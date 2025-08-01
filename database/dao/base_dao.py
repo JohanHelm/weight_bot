@@ -109,7 +109,7 @@ class GetPackItemsDAO(ModelSession, AbstractGetPackDAO):
         query = (select(self.model).
                  where(self.model.user_id == user_id).
                  order_by(ordering).
-                 limit(limit).
+                 limit(limit * 2).
                  offset(offset)
                  )
 

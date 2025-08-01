@@ -3,6 +3,7 @@ import random
 from aiogram import Bot, F, Router
 from aiogram.filters import Command, CommandStart
 from aiogram.types import CallbackQuery, ContentType, Message, BufferedInputFile
+from aiogram.fsm.context import FSMContext
 from dishka.integrations.aiogram import FromDishka
 
 from config_data.config import TgBot
@@ -51,6 +52,7 @@ async def process_start_command(msg: Message,
 async def process_back_click(callback: CallbackQuery,
                              bot: Bot,
                              bot_config: FromDishka[TgBot],
+                             state: FSMContext,
                              ):
     await edit_message_media(callback,
                              bot,
@@ -58,6 +60,7 @@ async def process_back_click(callback: CallbackQuery,
                              main_keyboard,
                              create_hello_msg(callback),
                              )
+    await state.clear()
 
 
 @common_router.callback_query(F.data == "track_btn",)
@@ -99,7 +102,7 @@ async def process_plot_click(callback: CallbackQuery,
                              weight_dao: FromDishka[UserAccessWeightsDAO],
                              ):
     weighins_count = weight_dao.get_count(callback.from_user.id)
-
+    print(weighins_count)
     if weighins_count < AppParams.minimal_interval * 2:
         reply_text = create_not_enough_data_msg(weighins_count)
         media = random.choice(bot_config.bot_pic)
@@ -107,7 +110,7 @@ async def process_plot_click(callback: CallbackQuery,
 
         two_weeks = weight_dao.get_pack(user_id=callback.from_user.id,
                                         page=0,
-                                        limit=AppParams.minimal_interval * 2,
+                                        limit=AppParams.minimal_interval,
                                         )
         two_weeks_df = models_2_df_converter(two_weeks)
         img_bytes = create_plot(two_weeks_df)
