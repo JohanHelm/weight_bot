@@ -1,18 +1,16 @@
 import enum
 
 from sqlalchemy import (
-    Boolean,
     Column,
-    DateTime,
+    Date,
     Enum,
+    Float,
     ForeignKey,
+    Index,
     Integer,
     String,
     UniqueConstraint,
     text,
-    Float,
-    Index,
-    Date,
 )
 from sqlalchemy.orm import relationship
 

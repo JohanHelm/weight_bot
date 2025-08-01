@@ -1,4 +1,4 @@
-from database.dao.base_dao import GetOneItemDAO, AddOneItemDAO
+from database.dao.base_dao import AddOneItemDAO, GetOneItemDAO
 from database.models import User
 
 

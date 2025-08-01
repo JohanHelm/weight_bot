@@ -1,9 +1,9 @@
 import asyncio
 
 from aiogram import Bot, Dispatcher
-from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
+from aiogram.fsm.storage.memory import MemoryStorage
 from dishka import make_async_container
 from dishka.integrations.aiogram import (
     AiogramProvider,
@@ -12,12 +12,10 @@ from dishka.integrations.aiogram import (
 
 from config_data.config import Config, load_config
 from config_data.logging_settings import configure_logger
-from config_data.initial_settings import PathParams
 from handlers.common import common_router
 from handlers.weighings import weighings_router
-from database.connection import get_db_session
-from utils.prepare import create_logs_catalogs
 from utils.dependencies import MyProvider
+from utils.prepare import create_logs_catalogs
 
 
 async def main():

@@ -2,7 +2,7 @@ import logging
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
 
-from config_data.initial_settings import PathParams, LogParams
+from config_data.initial_settings import LogParams, PathParams
 
 
 def configure_logger(module_name: str, logfile: Path = PathParams.bot_logfile):
