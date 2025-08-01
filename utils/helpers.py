@@ -3,11 +3,13 @@ from math import fabs
 from aiogram import Bot
 from aiogram.exceptions import TelegramBadRequest
 from aiogram.types import BufferedInputFile, CallbackQuery, InlineKeyboardMarkup, InputMediaPhoto
+from aiogram.fsm.context import FSMContext
 from pandas.core.frame import DataFrame
 import pandas as pd
 
 from config_data.initial_settings import AppParams
 from database.models import Weights
+from database.dao.weight_dao import UserAccessWeightsDAO
 
 async def edit_message_media(callback: CallbackQuery,
                              bot: Bot,
@@ -56,3 +58,19 @@ def models_2_df_converter(two_weeks: list[Weights]) -> DataFrame:
          "weight": (item.weight for item in two_weeks),
          },
     )
+
+async def get_plot_data(state: FSMContext,
+                        callback: CallbackQuery,
+                        weight_dao: UserAccessWeightsDAO,
+                        weighins_count: int = 0,
+                        ) -> tuple[list[Weights], int,int]:
+
+    state_data = await state.get_data()
+    page = state_data.get("page", 0) + int(callback.data)
+    total_pages = state_data.get("total_pages", weighins_count // (AppParams.minimal_interval * 2))
+
+    two_weeks = weight_dao.get_pack(user_id=callback.from_user.id,
+                                    page=page,
+                                    limit=AppParams.minimal_interval,
+                                    )
+    return two_weeks, page, total_pages
