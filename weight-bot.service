@@ -1,0 +1,21 @@
+[Unit]
+Description=bot for weight control
+After=syslog.target
+After=network.target
+
+[Service]
+Type=simple
+
+User=root
+Group=root
+
+WorkingDirectory=/root/weight_bot
+ExecStart=/root/weight_bot/.venv/bin/python /root/weight_bot/main.py
+# Restart=always
+
+StandardOutput=file:/root/weight_bot/logs/stdout.log
+StandardError=file:/root/weight_bot/logs/stderr.log
+SyslogIdentifier=weight_bot
+
+[Install]
+WantedBy=default.target
