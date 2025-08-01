@@ -27,20 +27,6 @@ logger = configure_logger(__name__)
 weighings_router = Router()
 
 
-@weighings_router.callback_query(F.data == "backward_btn", ~StateFilter(default_state))
-async def process_cancel_command_state(callback: CallbackQuery,
-                                       bot: Bot,
-                                       bot_config: FromDishka[TgBot],
-                                       state: FSMContext):
-    await edit_message_media(callback,
-                             bot,
-                             random.choice(bot_config.bot_pic),
-                             main_keyboard,
-                             create_hello_msg(callback),
-                             )
-    await state.clear()
-
-
 @weighings_router.callback_query(F.data == "weighin_btn", StateFilter(default_state))
 async def set_weighing_data(callback: CallbackQuery,
                             bot: Bot,
