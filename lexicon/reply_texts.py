@@ -1,4 +1,4 @@
-
+from pandas.core.frame import DataFrame
 from aiogram.types import CallbackQuery, Message
 
 from config_data.initial_settings import AppParams
@@ -54,6 +54,10 @@ def got_new_weighing_data_msg(weigh_data: float) -> str:
 
 def create_confirmed_weighing_msg(weigh_data: float) -> str:
     return f"Результат вашего взвешивания сегодня {weigh_data} кг сохранён.\n"
+
+
+def create_plot_title(two_weeks_df: DataFrame) -> str:
+    return f"Результаты взвешиваний с {min(two_weeks_df.date.values)} по {max(two_weeks_df.date.values)}."
 
 bad_weighing_data_msg = "Введены некорректные данные!!!\n"
 
