@@ -1,10 +1,10 @@
 from dishka import Provider, Scope, provide
 from sqlalchemy.orm import Session
 
-from database.dao.user_dao import UserAccessUserDAO
-from database.dao.weight_dao import UserAccessWeightsDAO
 from config_data.config import Config, TgBot
 from database.connection import get_db_session
+from database.dao.user_dao import UserAccessUserDAO
+from database.dao.weight_dao import UserAccessWeightsDAO
 
 
 class MyProvider(Provider):

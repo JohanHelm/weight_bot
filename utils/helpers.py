@@ -1,10 +1,13 @@
 from math import fabs
+
 from aiogram import Bot
-from aiogram.types import CallbackQuery, InputMediaPhoto, BufferedInputFile, InlineKeyboardMarkup
 from aiogram.exceptions import TelegramBadRequest
+from aiogram.types import BufferedInputFile, CallbackQuery, InlineKeyboardMarkup, InputMediaPhoto
+from pandas.core.frame import DataFrame
+import pandas as pd
 
 from config_data.initial_settings import AppParams
-
+from database.models import Weights
 
 async def edit_message_media(callback: CallbackQuery,
                              bot: Bot,
@@ -46,3 +49,10 @@ def correct_weighing_data(input_weight: str) -> bool:
     else:
         return 1 <= weigh_data  <= 300
 
+
+def models_2_df_converter(two_weeks: list[Weights]) -> DataFrame:
+    return pd.DataFrame(
+        {"date": (item.date for item in two_weeks),
+         "weight": (item.weight for item in two_weeks),
+         },
+    )
