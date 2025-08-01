@@ -2,8 +2,8 @@ import random
 
 from aiogram import Bot, F, Router
 from aiogram.filters import Command, CommandStart
-from aiogram.types import CallbackQuery, ContentType, Message, BufferedInputFile
 from aiogram.fsm.context import FSMContext
+from aiogram.types import CallbackQuery, ContentType, Message
 from dishka.integrations.aiogram import FromDishka
 
 from config_data.config import TgBot
@@ -20,7 +20,6 @@ from lexicon.reply_texts import (
 )
 from markups.keyboards import back_keyboard, main_keyboard
 from utils.helpers import calculate_weight_gain, edit_message_media
-
 
 logger = configure_logger(__name__)
 common_router = Router()
@@ -102,7 +101,6 @@ async def process_help_command(msg: Message,
                              caption=help_msg,
                              reply_markup=back_keyboard,
                              )
-
 
 
 # Этот хэндлер будет срабатывать на отправку боту фотоF.content_type == ContentType.PHOTO

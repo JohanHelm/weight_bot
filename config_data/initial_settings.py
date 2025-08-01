@@ -4,7 +4,7 @@ from pathlib import Path
 
 @dataclass(frozen=True)
 class LogParams:
-    loglevel: int = 10 #debug
+    loglevel: int = 10  # debug
     log_max_size: int = 10
     log_file_mode: str = "w"
     backup_count: int = 10
@@ -16,6 +16,7 @@ class PathParams:
     workdir: Path = Path().resolve()
     logs_catalog = workdir.joinpath("logs")
     bot_logfile = logs_catalog.joinpath("weight_bot.log")
+
 
 @dataclass(frozen=True)
 class AppParams:
@@ -35,5 +36,5 @@ class PlotParams:
     plot_label: str = "Вес"
     x_label_rotation: int = 90
     marker: str = 'o'
-    trend_label="Тренд"
+    trend_label = "Тренд"
     trend_color = "red"

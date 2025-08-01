@@ -13,8 +13,8 @@ from dishka.integrations.aiogram import (
 from config_data.config import Config, load_config
 from config_data.logging_settings import configure_logger
 from handlers.common import common_router
-from handlers.weighings import weighings_router
 from handlers.pagination import page_router
+from handlers.weighings import weighings_router
 from utils.dependencies import MyProvider
 from utils.prepare import create_logs_catalogs
 

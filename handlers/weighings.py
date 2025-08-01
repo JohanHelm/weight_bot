@@ -33,7 +33,11 @@ async def set_weighing_data(callback: CallbackQuery,
                             bot_config: FromDishka[TgBot],
                             weight_dao: FromDishka[UserAccessWeightsDAO],
                             state: FSMContext):
-    last_weigh_data = weight_dao.get_one({"user_id": callback.from_user.id, "date": str(date.today())})
+    last_weigh_data = weight_dao.get_one(
+        {"user_id": callback.from_user.id,
+         "date": str(date.today()),
+         },
+    )
     if last_weigh_data is None:
         await edit_message_media(callback,
                                  bot,
@@ -81,7 +85,9 @@ async def process_weighing_data(msg: Message,
                                  )
 
 
-@weighings_router.callback_query(F.data == "confirm_btn", StateFilter(FSMWeighingForm.confirm_weighing_data), )
+@weighings_router.callback_query(F.data == "confirm_btn",
+                                 StateFilter(FSMWeighingForm.confirm_weighing_data),
+                                 )
 async def confirm_weighing_data(callback: CallbackQuery,
                                 bot: Bot,
                                 bot_config: FromDishka[TgBot],
@@ -90,7 +96,10 @@ async def confirm_weighing_data(callback: CallbackQuery,
                                 ):
     state_data = await state.get_data()
     weigh_data = state_data.get("weigh_data")
-    weight_dao.add_one({"user_id": callback.from_user.id, "weight": weigh_data, "date": date.today()})
+    weight_dao.add_one({"user_id": callback.from_user.id,
+                        "weight": weigh_data,
+                        "date": date.today()},
+                       )
 
     await callback.answer(text=create_confirmed_weighing_msg(weigh_data),
                           show_alert=True,

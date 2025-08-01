@@ -13,6 +13,7 @@ class TgBot:
     token: str
     bot_pic: tuple[str]
 
+
 @dataclass
 class Config:
     tg_bot: TgBot

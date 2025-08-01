@@ -1,33 +1,27 @@
 import random
 
 from aiogram import Bot, F, Router
-from aiogram.filters import Command, CommandStart, StateFilter
-from aiogram.fsm.state import default_state
-from aiogram.types import CallbackQuery, ContentType, Message, BufferedInputFile
+from aiogram.filters import StateFilter
 from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import default_state
+from aiogram.types import BufferedInputFile, CallbackQuery
 from dishka.integrations.aiogram import FromDishka
 
 from config_data.config import TgBot
 from config_data.initial_settings import AppParams, PlotParams
 from config_data.logging_settings import configure_logger
-from database.dao.user_dao import UserAccessUserDAO
 from database.dao.weight_dao import UserAccessWeightsDAO
 from lexicon.reply_texts import (
-    create_hello_msg,
     create_not_enough_data_msg,
-    create_track_weight_msg,
-    get_user_names,
-    help_msg,
-    create_plot_title
+    create_plot_title,
 )
-from markups.keyboards import back_keyboard, main_keyboard, page_keyboard
-from utils.plot_service import create_plot
-from utils.helpers import get_plot_data, edit_message_media, models_2_df_converter
+from markups.keyboards import back_keyboard, page_keyboard
 from states.fsm import FSMPageForm
+from utils.helpers import edit_message_media, get_plot_data, models_2_df_converter
+from utils.plot_service import create_plot
 
 logger = configure_logger(__name__)
 page_router = Router()
-
 
 
 @page_router.callback_query(F.data == "0", StateFilter(default_state))
@@ -43,7 +37,10 @@ async def process_plot_click(callback: CallbackQuery,
         media = random.choice(bot_config.bot_pic)
         reply_keyboard = back_keyboard
     else:
-        two_weeks, page, total_pages = await get_plot_data(state, callback, weight_dao, weighins_count)
+        two_weeks, page, total_pages = await get_plot_data(state,
+                                                           callback,
+                                                           weight_dao,
+                                                           weighins_count)
         two_weeks_df = models_2_df_converter(two_weeks)
         img_bytes = create_plot(two_weeks_df)
         media = BufferedInputFile(img_bytes.read(), filename=PlotParams.img_filename, )

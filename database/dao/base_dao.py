@@ -98,7 +98,7 @@ class GetPackItemsDAO(ModelSession, AbstractGetPackDAO):
                  user_id: int,
                  page: int,
                  limit: int,
-                 order_by: str  = "date",
+                 order_by: str = "date",
                  descending: bool = True,
                  ) -> list[dict[str, Any]]:
 

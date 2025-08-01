@@ -1,15 +1,16 @@
 from math import fabs
 
+import pandas as pd
 from aiogram import Bot
 from aiogram.exceptions import TelegramBadRequest
-from aiogram.types import BufferedInputFile, CallbackQuery, InlineKeyboardMarkup, InputMediaPhoto
 from aiogram.fsm.context import FSMContext
+from aiogram.types import BufferedInputFile, CallbackQuery, InlineKeyboardMarkup, InputMediaPhoto
 from pandas.core.frame import DataFrame
-import pandas as pd
 
 from config_data.initial_settings import AppParams
-from database.models import Weights
 from database.dao.weight_dao import UserAccessWeightsDAO
+from database.models import Weights
+
 
 async def edit_message_media(callback: CallbackQuery,
                              bot: Bot,
@@ -34,7 +35,10 @@ async def edit_message_media(callback: CallbackQuery,
 
 
 def calculate_weight_gain(last_week: float, previous_week: float) -> float:
-    natural_weight_fluctuations = round(max(last_week, previous_week) * AppParams.threshold_percent / 100, 2)
+    natural_weight_fluctuations = round(
+        max(last_week, previous_week) * AppParams.threshold_percent / 100,
+        2,
+    )
     weight_difference = round(last_week - previous_week, 2)
 
     if fabs(weight_difference) <= natural_weight_fluctuations:
@@ -49,7 +53,7 @@ def correct_weighing_data(input_weight: str) -> bool:
     except ValueError:
         return False
     else:
-        return 1 <= weigh_data  <= 300
+        return 1 <= weigh_data <= 300
 
 
 def models_2_df_converter(two_weeks: list[Weights]) -> DataFrame:
@@ -59,11 +63,12 @@ def models_2_df_converter(two_weeks: list[Weights]) -> DataFrame:
          },
     )
 
+
 async def get_plot_data(state: FSMContext,
                         callback: CallbackQuery,
                         weight_dao: UserAccessWeightsDAO,
                         weighins_count: int = 0,
-                        ) -> tuple[list[Weights], int,int]:
+                        ) -> tuple[list[Weights], int, int]:
 
     state_data = await state.get_data()
     page = state_data.get("page", 0) + int(callback.data)

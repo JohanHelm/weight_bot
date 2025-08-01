@@ -1,4 +1,10 @@
-from database.dao.base_dao import AddOneItemDAO, GetAwgDataDAO, GetCountItemsDAO, GetOneItemDAO, GetPackItemsDAO
+from database.dao.base_dao import (
+    AddOneItemDAO,
+    GetAwgDataDAO,
+    GetCountItemsDAO,
+    GetOneItemDAO,
+    GetPackItemsDAO,
+)
 from database.models import Weights
 
 

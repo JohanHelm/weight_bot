@@ -1,6 +1,7 @@
 from io import BytesIO
-import numpy as np
+
 import matplotlib.pyplot as plt
+import numpy as np
 from pandas.core.frame import DataFrame
 
 from config_data.initial_settings import PlotParams

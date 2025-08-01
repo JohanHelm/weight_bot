@@ -1,6 +1,15 @@
 from aiogram.types import InlineKeyboardMarkup
 
-from markups.buttons import *
+from markups.buttons import (
+    backward_btn,
+    confirm_btn,
+    create_pages_total_btn,
+    page_backward_btn,
+    page_forward_btn,
+    plot_btn,
+    track_btn,
+    weighin_btn,
+)
 
 main_keyboard = InlineKeyboardMarkup(
     inline_keyboard=[[plot_btn],
@@ -20,13 +29,17 @@ confirm_keyboard = InlineKeyboardMarkup(
                      ]
 )
 
-def page_keyboard(page:int, total_pages: int)->InlineKeyboardMarkup:
+
+def page_keyboard(page: int, total_pages: int) -> InlineKeyboardMarkup:
     if page == total_pages:
         first_row = [create_pages_total_btn(page, total_pages), page_forward_btn]
     elif page == 0:
         first_row = [page_backward_btn, create_pages_total_btn(page, total_pages)]
     else:
-        first_row = [page_backward_btn, create_pages_total_btn(page, total_pages), page_forward_btn]
+        first_row = [page_backward_btn,
+                     create_pages_total_btn(page, total_pages),
+                     page_forward_btn,
+                     ]
 
     return InlineKeyboardMarkup(
         inline_keyboard=[first_row,
