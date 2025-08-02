@@ -20,7 +20,7 @@ from lexicon.reply_texts import (
     got_new_weighing_data_msg,
 )
 from markups.keyboards import back_keyboard, confirm_keyboard, main_keyboard
-from states.fsm import FSMWeighingForm
+from states.states import FSMWeighingForm
 from utils.helpers import correct_weighing_data, edit_message_media
 
 logger = configure_logger(__name__)

@@ -16,7 +16,7 @@ from lexicon.reply_texts import (
     create_plot_title,
 )
 from markups.keyboards import back_keyboard, page_keyboard
-from states.fsm import FSMPageForm
+from states.states import FSMPageForm
 from utils.helpers import edit_message_media, get_plot_data, models_2_df_converter
 from utils.plot_service import create_plot
 
