@@ -1,5 +1,4 @@
 from dishka import Provider, Scope, provide
-from sqlalchemy.orm import Session
 
 from config_data.config import Config, TgBot
 from database.connection import get_db_session
@@ -10,7 +9,6 @@ from database.dao.weight_dao import UserAccessWeightsDAO
 class MyProvider(Provider):
     def __init__(self, config: Config):
         super().__init__()
-        self.db_session: Session = get_db_session(config)
         self.config = config
 
     @provide(scope=Scope.APP)
@@ -19,8 +17,8 @@ class MyProvider(Provider):
 
     @provide(scope=Scope.REQUEST)
     async def get_user_dao(self) -> UserAccessUserDAO:
-        return UserAccessUserDAO(self.db_session)
+        return UserAccessUserDAO(get_db_session(self.config))
 
     @provide(scope=Scope.REQUEST)
     async def get_weight_dao(self) -> UserAccessWeightsDAO:
-        return UserAccessWeightsDAO(self.db_session)
+        return UserAccessWeightsDAO(get_db_session(self.config))
