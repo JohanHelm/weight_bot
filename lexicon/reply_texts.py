@@ -1,3 +1,5 @@
+from math import fabs
+
 from aiogram.types import CallbackQuery, Message
 from pandas.core.frame import DataFrame
 
@@ -39,7 +41,7 @@ def create_track_weight_msg(weight_gain: float) -> str:
         msg = (f"Колебания веса вашего тела ниже {AppParams.threshold_percent}%.\n"
                f"У вас нет устойчивого набора или снижения веса.")
     elif weight_gain < 0:
-        msg = f"За предидущую неделю вы похудели примерно на {weight_gain} кг."
+        msg = f"За предидущую неделю вы похудели примерно на {fabs(weight_gain)} кг."
     else:
         msg = f"За предидущую неделю вы набрали примерно {weight_gain} кг."
     return msg
